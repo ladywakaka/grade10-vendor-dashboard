@@ -148,7 +148,6 @@ body{margin:0;color:var(--fg);font-family:var(--sans);font-size:15px;line-height
   <section class="vd-grid" id="breakdowns">
     <div class="vd-card" id="by-lead"><h2>Lead rating</h2><p class="vd-note">Click a bar to filter the page.</p><div class="vd-bars" data-dim="lead"></div></div>
     <div class="vd-card" id="by-country"><h2>Country</h2><p class="vd-note">Where each vendor is based. Click a country to filter.</p><div class="vd-bars" data-dim="country"></div></div>
-    <div class="vd-card" id="by-region"><h2>Region</h2><p class="vd-note">Countries grouped into regions.</p><div class="vd-bars" data-dim="region"></div></div>
     <div class="vd-card" id="by-category"><h2>What they sell</h2><p class="vd-note">A vendor can sell more than one category.</p><div class="vd-bars" data-dim="cat"></div></div>
     <div class="vd-card" id="by-show"><h2>Where we met them</h2><p class="vd-note">Card shows our team attended.</p><div class="vd-bars" data-dim="show"></div></div>
     <div class="vd-card" id="by-fest"><h2>Interest in a G10 show</h2><p class="vd-note">Their answer when we asked about G10 Fest.</p><div class="vd-bars" data-dim="fest"></div></div>
@@ -255,7 +254,6 @@ body{margin:0;color:var(--fg);font-family:var(--sans);font-size:15px;line-height
   const DIMS = {
     lead: { field: 'Lead Rating', label: 'Lead', order: ['Hot', 'Warm', 'Neutral', 'Cool'], color: 'var(--c1)' },
     country: { field: 'Country', label: 'Country', split: /\s*\/\s*/, color: 'var(--c1)' },
-    region: { field: 'Region', label: 'Region', color: 'var(--c2)' },
     cat: { field: 'Categories', label: 'Sells', multi: true, color: 'var(--c3)' },
     show: { field: 'Met At', label: 'Met at', multi: true, color: 'var(--c4)' },
     fest: { field: 'G10 Fest Interest', label: 'G10 show', order: ['Yes', 'Past Participant', 'Maybe', 'No'], color: 'var(--c5)' },
