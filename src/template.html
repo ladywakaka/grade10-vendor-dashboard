@@ -82,6 +82,16 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
 .vd-partner b{font-weight:600}
 .vd-partner span{font-size:12.5px;color:var(--muted)}
 .vd-partner p{margin:0;font-size:13px}
+.vd-table td a{color:var(--c1);text-decoration:none}
+.vd-table td a:hover{text-decoration:underline}
+.vd-handle{display:block;white-space:nowrap}
+.vd-handle small{color:var(--muted);font-size:11px;margin-right:4px}
+.vd-bar.vd-static{cursor:default}
+.vd-bar.vd-static:hover .vd-bar-l{text-decoration:none}
+.vd-insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:20px}
+.vd-insights h3{font-size:13px;font-weight:600;margin-bottom:8px}
+.vd-insights ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:8px;font-size:14px;max-width:70ch}
+.vd-insights b{font-weight:600}
 @media (max-width:640px){.vd-hide-narrow{display:none}}
 </style>
 </head>
@@ -109,10 +119,41 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
 
   <section class="vd-grid" id="breakdowns">
     <div class="vd-card" id="by-lead"><h2>Lead rating</h2><p class="vd-note">Click a bar to filter the page.</p><div class="vd-bars" data-dim="lead"></div></div>
-    <div class="vd-card" id="by-region"><h2>Region</h2><p class="vd-note">Where each vendor is based.</p><div class="vd-bars" data-dim="region"></div></div>
+    <div class="vd-card" id="by-country"><h2>Country</h2><p class="vd-note">Where each vendor is based. Click a country to filter.</p><div class="vd-bars" data-dim="country"></div></div>
+    <div class="vd-card" id="by-region"><h2>Region</h2><p class="vd-note">Countries grouped into regions.</p><div class="vd-bars" data-dim="region"></div></div>
     <div class="vd-card" id="by-category"><h2>What they sell</h2><p class="vd-note">A vendor can sell more than one category.</p><div class="vd-bars" data-dim="cat"></div></div>
     <div class="vd-card" id="by-show"><h2>Where we met them</h2><p class="vd-note">Card shows our team attended.</p><div class="vd-bars" data-dim="show"></div></div>
     <div class="vd-card" id="by-fest"><h2>Interest in a G10 show</h2><p class="vd-note">Their answer when we asked about G10 Fest.</p><div class="vd-bars" data-dim="fest"></div></div>
+    <div class="vd-card" id="by-type"><h2>Type of vendor</h2><p class="vd-note">Shops, collectors, dealers, platforms and service providers.</p><div class="vd-bars" data-dim="type"></div></div>
+    <div class="vd-card" id="by-channel"><h2>How we can reach them</h2><p class="vd-note">Vendors with each contact point on file. Most have more than one.</p><div class="vd-bars" id="vd-channels"></div></div>
+  </section>
+
+  <section class="vd-card" id="insights">
+    <h2>Key insights</h2>
+    <p class="vd-note">What our team learned at each show. Full notes are in Notion under Grade10 / Card Shows.</p>
+    <div class="vd-insights">
+      <div>
+        <h3>ASSC Card Show, Macau · 10 Oct 2026</h3>
+        <ul>
+          <li><b>Sports cards dominate.</b> Almost every vendor is sports-led; only a few also carry Pokémon. High-end sports inventory is the easiest gap to fill for a Grade10 show.</li>
+          <li><b>Strong appetite for the 2027 Grade10 show.</b> AceCards (Taiwan) and CherryCollectibles (Australia) raised 2027 timing; Cardboard Corner (Philippines) is eager to come.</li>
+          <li><b>Thailand has competing shows.</b> CardWorld BKK (16–18 Oct) is large, draws many Macau vendors and invited Grade10 to take part. Cardster runs a smaller one.</li>
+          <li><b>Overseas sellers want the HK market.</b> RelikksCard (Canada) and MBA (US) are actively exploring Hong Kong, and several vendors are open to G10 consignment.</li>
+          <li><b>Mainland vendors face friction.</b> PenceCards struggles to bring inventory across for tax reasons, so expect cross-border logistics to be a barrier.</li>
+          <li><b>Partnerships beyond booths:</b> MBA (grading partner for the G10 store), AMCC (Panini supply), Frozon (protective card cases, OEM/ODM).</li>
+        </ul>
+      </div>
+      <div>
+        <h3>HK Trading Card Show, Asia Expo · 26–27 Sep 2026</h3>
+        <ul>
+          <li><b>HK inventory is monotone.</b> Mostly Japanese and modern; high-end English and graded vintage chases (Gold Star, Shining, Level X) are almost absent. Heatpvck and Kenshin are routes to fill the gap.</li>
+          <li><b>Consignment pipeline for the G10 store:</b> StrayCollective PH, Kenshin and SenditSaturdays all want to consign. Due diligence first.</li>
+          <li><b>Alt.xyz</b> (US auction house with a Delaware vault) is very warm on the Feb show and store plans.</li>
+          <li><b>Unserved collectors:</b> Slab-Z sees a hidden base of vintage One Piece and Dragon Ball collectors in HK; trade nights or trade tables at the G10 show could reach them.</li>
+          <li><b>Vendor risk:</b> an Oripa booth drew bad publicity on Threads. Vet private-collector vendors carefully.</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section class="vd-card" id="directory">
@@ -122,13 +163,14 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
       <table class="vd-table">
         <thead><tr>
           <th data-field="Vendor"><button type="button" data-sort="Vendor">Vendor</button></th>
+          <th data-field="Vendor Type" class="vd-hide-narrow"><button type="button" data-sort="Vendor Type">Type</button></th>
           <th data-field="Country"><button type="button" data-sort="Country">Country</button></th>
-          <th data-field="Categories" class="vd-hide-narrow"><button type="button" data-sort="Categories">Sells</button></th>
-          <th data-field="Price Range" class="vd-hide-narrow"><button type="button" data-sort="Price Range">Price range</button></th>
+          <th data-field="Contact Person" class="vd-hide-narrow"><button type="button" data-sort="Contact Person">Contact person</button></th>
+          <th data-field="_ig"><button type="button" data-sort="_ig">Instagram</button></th>
+          <th data-field="_chat" class="vd-hide-narrow"><button type="button" data-sort="_chat">WeChat / WhatsApp</button></th>
+          <th data-field="_email" class="vd-hide-narrow"><button type="button" data-sort="_email">Email</button></th>
           <th data-field="Lead Rating"><button type="button" data-sort="Lead Rating">Lead</button></th>
           <th data-field="G10 Fest Interest" class="vd-hide-narrow"><button type="button" data-sort="G10 Fest Interest">G10 show</button></th>
-          <th data-field="G10 Consignment Interest" class="vd-hide-narrow"><button type="button" data-sort="G10 Consignment Interest">Consignment</button></th>
-          <th data-field="Our Contact" class="vd-hide-narrow"><button type="button" data-sort="Our Contact">Our contact</button></th>
         </tr></thead>
         <tbody id="vd-tbody"></tbody>
       </table>
@@ -158,12 +200,38 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
   const DATA = JSON.parse(document.getElementById('vendor-data').textContent);
   const ALL = DATA.rows;
 
+  // Pull every contact point out of the Instagram, Email and free-text Contact Details fields.
+  const uniq = (a) => [...new Set(a.filter(Boolean))];
+  function contactsOf(r) {
+    const d = r['Contact Details'] || '';
+    const ig = uniq([
+      r.Instagram,
+      ...(d.match(/https:\/\/(?:www\.)?instagram\.com\/[\w.]+\/?/gi) || []),
+      ...[...d.matchAll(/\bIG:\s*@?([\w.]+)/gi)].map((m) => `https://www.instagram.com/${m[1]}/`),
+    ].map((u) => u && u.replace(/\?.*$/, '')));
+    const wechat = uniq([...d.matchAll(/we\s?chat:?\s*([\w-]+)/gi)].map((m) => m[1]));
+    const whatsapp = uniq([...d.matchAll(/whatsapp:?\s*(\+?[\d][\d\s-]{5,}\d)/gi)].map((m) => m[1].trim()));
+    const email = uniq([r.Email, ...(d.match(/[\w.+-]+@[\w-]+\.[\w.-]+/g) || [])].map((e) => e && e.toLowerCase()));
+    const web = uniq([...d.matchAll(/\bweb:\s*([\w.-]+\.[a-z]{2,})/gi)].map((m) => 'https://' + m[1]));
+    return { ig, wechat, whatsapp, email, web };
+  }
+  const igHandle = (u) => '@' + u.replace(/^https:\/\/(www\.)?instagram\.com\//i, '').replace(/\/$/, '');
+  ALL.forEach((r) => {
+    const c = contactsOf(r);
+    Object.defineProperty(r, '_c', { value: c, enumerable: false });
+    r._ig = c.ig.map(igHandle).join(' ') || null;
+    r._chat = [...c.wechat, ...c.whatsapp].join(' ') || null;
+    r._email = c.email.join(' ') || null;
+  });
+
   const DIMS = {
     lead: { field: 'Lead Rating', label: 'Lead', order: ['Hot', 'Warm', 'Neutral', 'Cool'], color: 'var(--c1)' },
+    country: { field: 'Country', label: 'Country', split: /\s*\/\s*/, color: 'var(--c1)' },
     region: { field: 'Region', label: 'Region', color: 'var(--c2)' },
     cat: { field: 'Categories', label: 'Sells', multi: true, color: 'var(--c3)' },
     show: { field: 'Met At', label: 'Met at', multi: true, color: 'var(--c4)' },
     fest: { field: 'G10 Fest Interest', label: 'G10 show', order: ['Yes', 'Past Participant', 'Maybe', 'No'], color: 'var(--c5)' },
+    type: { field: 'Vendor Type', label: 'Type', color: 'var(--c2)' },
   };
   const LEAD_COLOR = { Hot: 'var(--bad)', Warm: 'var(--warn)', Neutral: 'var(--muted)', Cool: 'var(--muted)' };
   const PRICE_ORDER = ['HKD 1K+', 'HKD 100K+', 'HKD 200K+', 'HKD 300K+'];
@@ -172,7 +240,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
 
   const $ = (s) => document.querySelector(s);
   const q = $('#vd-q');
-  const params = { lead: null, region: null, cat: null, show: null, fest: null, q: null };
+  const params = { q: null };
   let sort = { key: 'Lead Rating', dir: 1 };
   let selected = null;
 
@@ -180,6 +248,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
   const vals = (row, dim) => {
     const v = row[dim.field];
     if (v == null || v === '') return [];
+    if (dim.split) return String(v).split(dim.split).filter(Boolean);
     return dim.multi ? String(v).split(', ') : [String(v)];
   };
   const textOf = (row) => ['Vendor', 'Contact Person', 'Country', 'Region', 'Categories', 'Notes / Market Insights', 'Partnership Opportunity', 'Our Contact', 'Vendor Type', 'Met At', 'Next Step']
@@ -193,7 +262,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
   };
 
   q.addEventListener('input', () => set({ q: q.value.trim() || null }));
-  $('#vd-reset').addEventListener('click', () => { q.value = ''; set({ lead: null, region: null, cat: null, show: null, fest: null, q: null }); });
+  $('#vd-reset').addEventListener('click', () => { q.value = ''; set(Object.fromEntries([...Object.keys(DIMS), 'q'].map((k) => [k, null]))); });
   document.querySelectorAll('.vd-table th button').forEach((b) => b.addEventListener('click', () => {
     const k = b.dataset.sort;
     sort = sort.key === k ? { key: k, dir: -sort.dir } : { key: k, dir: 1 };
@@ -242,6 +311,23 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
     }));
   }
 
+  function drawChannels(rows) {
+    const box = $('#vd-channels');
+    const items = [['Instagram', 'ig'], ['Email', 'email'], ['WeChat', 'wechat'], ['WhatsApp', 'whatsapp']]
+      .map(([label, k]) => [label, rows.filter((r) => r._c[k].length).length]);
+    items.push(['No contact on file', rows.filter((r) => !['ig', 'email', 'wechat', 'whatsapp'].some((k) => r._c[k].length)).length]);
+    const max = Math.max(1, ...items.map((i) => i[1]));
+    box.replaceChildren(...items.map(([label, n]) => {
+      const row = el('div', 'vd-bar vd-static');
+      const t = el('span', 'vd-bar-t'); const f = el('span', 'vd-bar-f');
+      f.style.width = (n / max * 100) + '%';
+      f.style.background = label === 'No contact on file' ? 'var(--bad)' : 'var(--c1)';
+      t.append(f);
+      row.append(el('span', 'vd-bar-l', label), t, el('span', 'vd-bar-n', fmt.format(n)));
+      return row;
+    }));
+  }
+
   function drawTable(rows) {
     const tb = $('#vd-tbody');
     const ord = SORT_ORDER[sort.key];
@@ -259,19 +345,36 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
     });
     if (!sorted.length) {
       const tr = el('tr'); const td = el('td', 'vd-empty', 'No vendors match these filters.');
-      td.colSpan = 8; tr.append(td); tb.replaceChildren(tr); return;
+      td.colSpan = 9; tr.append(td); tb.replaceChildren(tr); return;
     }
-    const cols = [['Vendor'], ['Country'], ['Categories', 'vd-hide-narrow'], ['Price Range', 'vd-hide-narrow'], ['Lead Rating'],
-      ['G10 Fest Interest', 'vd-hide-narrow'], ['G10 Consignment Interest', 'vd-hide-narrow'], ['Our Contact', 'vd-hide-narrow']];
+    const cols = [['Vendor'], ['Vendor Type', 'vd-hide-narrow'], ['Country'], ['Contact Person', 'vd-hide-narrow'], ['_ig'],
+      ['_chat', 'vd-hide-narrow'], ['_email', 'vd-hide-narrow'], ['Lead Rating'], ['G10 Fest Interest', 'vd-hide-narrow']];
+    const handle = (label, text, href) => {
+      const s = el('span', 'vd-handle');
+      if (label) s.append(el('small', null, label));
+      if (href) {
+        const a = el('a', null, text); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.addEventListener('click', (e) => e.stopPropagation());
+        s.append(a);
+      } else s.append(document.createTextNode(text));
+      return s;
+    };
     tb.replaceChildren(...sorted.map((r) => {
       const tr = el('tr');
       tr.dataset.key = r.Vendor;
       tr.tabIndex = 0;
       tr.setAttribute('aria-selected', String(selected === r.Vendor));
+      const c = r._c;
       cols.forEach(([f, cls]) => {
         const td = el('td', cls);
         const v = r[f];
         if (f === 'Lead Rating' && v) { const p = el('span', 'vd-pill', v); p.style.color = LEAD_COLOR[v] || 'var(--muted)'; td.append(p); }
+        else if (f === '_ig') c.ig.forEach((u) => td.append(handle(null, igHandle(u), /^https:\/\//.test(u) ? u : null)));
+        else if (f === '_chat') {
+          c.wechat.forEach((w) => td.append(handle('WeChat', w)));
+          c.whatsapp.forEach((w) => td.append(handle('WhatsApp', w, 'https://wa.me/' + w.replace(/\D/g, ''))));
+        }
+        else if (f === '_email') c.email.forEach((m) => td.append(handle(null, m)));
         else td.textContent = v ?? '';
         tr.append(td);
       });
@@ -313,9 +416,13 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
     $('#vd-d-sub').textContent = [r['Vendor Type'], r.Country, r['Price Range'] && ('stock ' + r['Price Range']), r['Lead Rating'] && (r['Lead Rating'] + ' lead')].filter(Boolean).join(' · ');
     const dl = $('#vd-d-contact'); dl.replaceChildren();
     addRow(dl, 'Person', r['Contact Person']);
-    addRow(dl, 'Instagram', r.Instagram, { link: true });
-    addRow(dl, 'Email', r.Email, { copy: true });
-    addRow(dl, 'Other', r['Contact Details'], { copy: true });
+    const c = r._c;
+    c.ig.forEach((u) => addRow(dl, 'Instagram', u, { link: true, text: igHandle(u) }));
+    c.wechat.forEach((w) => addRow(dl, 'WeChat', w, { copy: true }));
+    c.whatsapp.forEach((w) => addRow(dl, 'WhatsApp', w, { copy: true }));
+    c.email.forEach((m) => addRow(dl, 'Email', m, { copy: true }));
+    c.web.forEach((u) => addRow(dl, 'Website', u, { link: true }));
+    if (!c.ig.length && !c.wechat.length && !c.whatsapp.length && !c.email.length) addRow(dl, 'Other', r['Contact Details'], { copy: true });
     addRow(dl, 'Our contact', r['Our Contact']);
     addRow(dl, 'Met at', r['Met At']);
     addRow(dl, 'Outreach', r['Outreach Status'] || 'Not set yet');
@@ -356,13 +463,14 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-
       hot: rows.filter((r) => r['Lead Rating'] === 'Hot').length,
       fest: rows.filter((r) => ['Yes', 'Past Participant'].includes(r['G10 Fest Interest'])).length,
       consign: rows.filter((r) => r['G10 Consignment Interest'] === 'Yes').length,
-      markets: new Set(rows.map((r) => r.Country).filter(Boolean)).size,
+      markets: new Set(rows.flatMap((r) => vals(r, DIMS.country))).size,
     };
     document.querySelectorAll('.vd-kpi-v').forEach((n) => { n.textContent = fmt.format(k[n.dataset.k]); });
     $('#vd-take').textContent = rows.length !== ALL.length
       ? `Showing ${rows.length} of ${ALL.length} vendors. ${k.hot} are hot leads and ${k.fest} want to join a Grade10 show.`
       : `${ALL.length} vendors from ${k.markets} markets. ${k.hot} are hot leads, ${k.fest} want to join a Grade10 show and ${k.consign} are open to G10 consignment.`;
-    document.querySelectorAll('.vd-bars').forEach(drawBars);
+    document.querySelectorAll('.vd-bars[data-dim]').forEach(drawBars);
+    drawChannels(rows);
     drawFilters();
     drawTable(rows);
     $('#vd-count').textContent = `${rows.length} ${rows.length === 1 ? 'vendor' : 'vendors'}. Click a vendor to see contacts and notes. Click a column name to sort.`;
