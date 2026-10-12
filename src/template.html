@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Grade10 Vendor Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400&display=swap">
+<style>
+/* Layout: one centred column; summary tiles, filters, a grid of clickable breakdowns, then the directory and profile. */
+:root{
+  --bg:#f6f6f4;--panel:#ffffff;--fg:#1f1e1c;--muted:#6b6a65;--line:#e2e1dc;--hover:#f0efeb;
+  --grid:#ecebe7;--bar-muted:#d3d2cc;--bad:#c4403a;--warn:#b5730c;
+  --c1:#3a68d0;--c2:#18917e;--c3:#7a5bd3;--c4:#cf7a23;--c5:#c24d83;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --r:10px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#181817;--panel:#222220;--fg:#ecebe6;--muted:#a3a29c;--line:#383835;--hover:#2b2b29;
+  --grid:#2f2f2c;--bar-muted:#4a4a46;--bad:#e5655d;--warn:#e0a03c;
+  --c1:#6f95ec;--c2:#3fbfa8;--c3:#a38bea;--c4:#eb9a4a;--c5:#e07aa8;color-scheme:dark;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.vd{display:flex;flex-direction:column;gap:20px;max-width:80rem;margin-inline:auto;padding:28px 16px 48px;font-variant-numeric:tabular-nums}
+@media (min-width:720px){.vd{padding-inline:32px}}
+.vd h1,.vd h2,.vd h3{margin:0;text-wrap:balance}
+.vd-head{display:flex;flex-direction:column;gap:6px}
+.vd-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,3vw,2.2rem);line-height:1.15}
+.vd-take{margin:0;color:var(--muted);max-width:70ch}
+.vd-updated{font-size:12px;color:var(--muted)}
+.vd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:12px}
+.vd-kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.vd-kpi-l{font-size:12.5px;color:var(--muted)}
+.vd-kpi-v{font-family:var(--serif);font-weight:400;font-size:2rem;line-height:1.1}
+.vd-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vd-filters input{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px;flex:1 1 16rem;min-width:0}
+.vd-filters input:focus-visible{outline:2px solid var(--c1);outline-offset:1px}
+.vd-chip,.vd-reset{font:inherit;font-size:12.5px;border-radius:999px;padding:5px 12px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--fg)}
+.vd-chip:hover,.vd-reset:hover{border-color:var(--muted)}
+.vd-chips{display:flex;flex-wrap:wrap;gap:6px}
+.vd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:12px}
+.vd-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.vd-card h2{font-size:1rem;font-weight:500}
+.vd-note{margin:0;font-size:12.5px;color:var(--muted)}
+.vd-bars{display:flex;flex-direction:column;gap:4px}
+.vd-bar{display:grid;grid-template-columns:minmax(6rem,10rem) 1fr 2rem;align-items:center;gap:10px;font:inherit;font-size:12.5px;color:var(--fg);background:none;border:0;padding:3px 0;cursor:pointer;text-align:left;border-radius:4px}
+.vd-bar:hover .vd-bar-l{text-decoration:underline}
+.vd-bar:focus-visible{outline:2px solid var(--muted);outline-offset:2px}
+.vd-bar-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vd-bar-t{height:14px;background:var(--grid);border-radius:4px;overflow:hidden}
+.vd-bar-f{display:block;height:100%;border-radius:4px}
+@media (prefers-reduced-motion:no-preference){.vd-bar-f{transition:width .35s cubic-bezier(.2,.7,.2,1)}}
+.vd-bar-n{text-align:right}
+.vd-bar[aria-pressed=true] .vd-bar-l{font-weight:600}
+.vd-tablebox{max-height:34rem;overflow:auto;border:1px solid var(--line);border-radius:var(--r)}
+.vd-table{width:100%;border-collapse:collapse;font-size:13px}
+.vd-table th{position:sticky;top:0;background:var(--panel);text-align:left;border-bottom:1px solid var(--line);padding:0;white-space:nowrap;z-index:1}
+.vd-table th button{font:inherit;font-weight:500;color:var(--fg);background:none;border:0;padding:9px 10px;cursor:pointer;width:100%;text-align:left}
+.vd-table th[aria-sort=ascending] button::after{content:" ↑";color:var(--muted)}
+.vd-table th[aria-sort=descending] button::after{content:" ↓";color:var(--muted)}
+.vd-table td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.vd-table tbody tr{cursor:pointer}
+.vd-table tbody tr:hover td,.vd-table tbody tr:focus-visible td{background:var(--hover)}
+.vd-table tbody tr[aria-selected=true] td{background:var(--hover);font-weight:600}
+.vd-pill{display:inline-block;padding:0 8px;border-radius:999px;font-size:12px;white-space:nowrap;border:1px solid currentColor}
+.vd-empty{margin:0;color:var(--muted);font-size:13px;padding:12px}
+.vd-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:16px}
+.vd-detail dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px}
+.vd-detail dt{color:var(--muted)}
+.vd-detail dd{margin:0;overflow-wrap:anywhere}
+.vd-detail p{margin:0;max-width:65ch;overflow-wrap:anywhere}
+.vd-detail h3{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:6px}
+.vd-detail a{color:inherit}
+.vd-copy{font:inherit;font-size:11.5px;margin-left:6px;background:none;border:1px solid var(--line);border-radius:4px;color:var(--muted);cursor:pointer;padding:0 6px}
+.vd-partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:12px}
+.vd-partner{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:4px;cursor:pointer;background:none;font:inherit;color:inherit;text-align:left}
+.vd-partner:hover{border-color:var(--muted)}
+.vd-partner b{font-weight:600}
+.vd-partner span{font-size:12.5px;color:var(--muted)}
+.vd-partner p{margin:0;font-size:13px}
+@media (max-width:640px){.vd-hide-narrow{display:none}}
+</style>
+</head>
+<body>
+<main class="vd">
+  <header class="vd-head" id="overview">
+    <h1>Grade10 Trading Card Vendors</h1>
+    <p class="vd-take" id="vd-take"></p>
+    <span class="vd-updated" id="vd-updated"></span>
+  </header>
+
+  <section class="vd-kpis" id="kpis">
+    <div class="vd-kpi"><span class="vd-kpi-l">Vendors</span><span class="vd-kpi-v" data-k="total">—</span></div>
+    <div class="vd-kpi"><span class="vd-kpi-l">Hot leads</span><span class="vd-kpi-v" data-k="hot">—</span></div>
+    <div class="vd-kpi"><span class="vd-kpi-l">Want to join a G10 show</span><span class="vd-kpi-v" data-k="fest">—</span></div>
+    <div class="vd-kpi"><span class="vd-kpi-l">Open to G10 consignment</span><span class="vd-kpi-v" data-k="consign">—</span></div>
+    <div class="vd-kpi"><span class="vd-kpi-l">Markets</span><span class="vd-kpi-v" data-k="markets">—</span></div>
+  </section>
+
+  <div class="vd-filters" id="filters">
+    <input id="vd-q" type="search" placeholder="Search vendor, contact, country or notes" aria-label="Search vendors">
+    <div class="vd-chips" id="vd-chips"></div>
+    <button class="vd-reset" id="vd-reset" type="button" hidden>Clear filters</button>
+  </div>
+
+  <section class="vd-grid" id="breakdowns">
+    <div class="vd-card" id="by-lead"><h2>Lead rating</h2><p class="vd-note">Click a bar to filter the page.</p><div class="vd-bars" data-dim="lead"></div></div>
+    <div class="vd-card" id="by-region"><h2>Region</h2><p class="vd-note">Where each vendor is based.</p><div class="vd-bars" data-dim="region"></div></div>
+    <div class="vd-card" id="by-category"><h2>What they sell</h2><p class="vd-note">A vendor can sell more than one category.</p><div class="vd-bars" data-dim="cat"></div></div>
+    <div class="vd-card" id="by-show"><h2>Where we met them</h2><p class="vd-note">Card shows our team attended.</p><div class="vd-bars" data-dim="show"></div></div>
+    <div class="vd-card" id="by-fest"><h2>Interest in a G10 show</h2><p class="vd-note">Their answer when we asked about G10 Fest.</p><div class="vd-bars" data-dim="fest"></div></div>
+  </section>
+
+  <section class="vd-card" id="directory">
+    <h2>Vendor directory</h2>
+    <p class="vd-note" id="vd-count"></p>
+    <div class="vd-tablebox">
+      <table class="vd-table">
+        <thead><tr>
+          <th data-field="Vendor"><button type="button" data-sort="Vendor">Vendor</button></th>
+          <th data-field="Country"><button type="button" data-sort="Country">Country</button></th>
+          <th data-field="Categories" class="vd-hide-narrow"><button type="button" data-sort="Categories">Sells</button></th>
+          <th data-field="Price Range" class="vd-hide-narrow"><button type="button" data-sort="Price Range">Price range</button></th>
+          <th data-field="Lead Rating"><button type="button" data-sort="Lead Rating">Lead</button></th>
+          <th data-field="G10 Fest Interest" class="vd-hide-narrow"><button type="button" data-sort="G10 Fest Interest">G10 show</button></th>
+          <th data-field="G10 Consignment Interest" class="vd-hide-narrow"><button type="button" data-sort="G10 Consignment Interest">Consignment</button></th>
+          <th data-field="Our Contact" class="vd-hide-narrow"><button type="button" data-sort="Our Contact">Our contact</button></th>
+        </tr></thead>
+        <tbody id="vd-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="vd-card" id="vendor-detail">
+    <h2 id="vd-d-name">Vendor profile</h2>
+    <p class="vd-note" id="vd-d-sub">Pick a vendor in the directory to see their contacts and our notes.</p>
+    <div class="vd-detail" id="vd-d-body" hidden>
+      <div><h3>Contact</h3><dl id="vd-d-contact"></dl></div>
+      <div><h3>Notes and market insights</h3><p id="vd-d-notes"></p></div>
+      <div><h3>Partnership opportunity</h3><p id="vd-d-partner"></p></div>
+    </div>
+  </section>
+
+  <section class="vd-card" id="partnerships">
+    <h2>Partnership leads</h2>
+    <p class="vd-note">Vendors with an opportunity beyond renting a booth: supply, grading, products or co-hosting.</p>
+    <div class="vd-partners" id="vd-partners"></div>
+  </section>
+</main>
+
+<script id="vendor-data" type="application/json">__VENDOR_DATA__</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById('vendor-data').textContent);
+  const ALL = DATA.rows;
+
+  const DIMS = {
+    lead: { field: 'Lead Rating', label: 'Lead', order: ['Hot', 'Warm', 'Neutral', 'Cool'], color: 'var(--c1)' },
+    region: { field: 'Region', label: 'Region', color: 'var(--c2)' },
+    cat: { field: 'Categories', label: 'Sells', multi: true, color: 'var(--c3)' },
+    show: { field: 'Met At', label: 'Met at', multi: true, color: 'var(--c4)' },
+    fest: { field: 'G10 Fest Interest', label: 'G10 show', order: ['Yes', 'Past Participant', 'Maybe', 'No'], color: 'var(--c5)' },
+  };
+  const LEAD_COLOR = { Hot: 'var(--bad)', Warm: 'var(--warn)', Neutral: 'var(--muted)', Cool: 'var(--muted)' };
+  const PRICE_ORDER = ['HKD 1K+', 'HKD 100K+', 'HKD 200K+', 'HKD 300K+'];
+  const SORT_ORDER = { 'Lead Rating': DIMS.lead.order, 'G10 Fest Interest': DIMS.fest.order, 'Price Range': PRICE_ORDER };
+  const fmt = new Intl.NumberFormat('en');
+
+  const $ = (s) => document.querySelector(s);
+  const q = $('#vd-q');
+  const params = { lead: null, region: null, cat: null, show: null, fest: null, q: null };
+  let sort = { key: 'Lead Rating', dir: 1 };
+  let selected = null;
+
+  const set = (patch) => { Object.assign(params, patch); draw(); };
+  const vals = (row, dim) => {
+    const v = row[dim.field];
+    if (v == null || v === '') return [];
+    return dim.multi ? String(v).split(', ') : [String(v)];
+  };
+  const textOf = (row) => ['Vendor', 'Contact Person', 'Country', 'Region', 'Categories', 'Notes / Market Insights', 'Partnership Opportunity', 'Our Contact', 'Vendor Type', 'Met At', 'Next Step']
+    .map((k) => row[k] || '').join(' ').toLowerCase();
+  const matches = (row, skip) => {
+    for (const k of Object.keys(DIMS)) {
+      if (k === skip || !params[k]) continue;
+      if (!vals(row, DIMS[k]).includes(params[k])) return false;
+    }
+    return !(params.q && !textOf(row).includes(params.q.toLowerCase()));
+  };
+
+  q.addEventListener('input', () => set({ q: q.value.trim() || null }));
+  $('#vd-reset').addEventListener('click', () => { q.value = ''; set({ lead: null, region: null, cat: null, show: null, fest: null, q: null }); });
+  document.querySelectorAll('.vd-table th button').forEach((b) => b.addEventListener('click', () => {
+    const k = b.dataset.sort;
+    sort = sort.key === k ? { key: k, dir: -sort.dir } : { key: k, dir: 1 };
+    draw();
+  }));
+  const pick = (name) => {
+    selected = selected === name ? null : name;
+    draw();
+    if (selected) $('#vendor-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+  $('#vd-tbody').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-key]'); if (tr) pick(tr.dataset.key); });
+  $('#vd-tbody').addEventListener('keydown', (e) => { const tr = e.target.closest('tr[data-key]'); if (tr && e.key === 'Enter') pick(tr.dataset.key); });
+  $('#vd-partners').addEventListener('click', (e) => { const b = e.target.closest('[data-vendor]'); if (b) { selected = null; pick(b.dataset.vendor); } });
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function drawBars(box) {
+    const key = box.dataset.dim;
+    const dim = DIMS[key];
+    const counts = new Map();
+    if (dim.order) dim.order.forEach((o) => counts.set(o, 0));
+    ALL.filter((r) => matches(r, key)).forEach((r) => vals(r, dim).forEach((v) => counts.set(v, (counts.get(v) || 0) + 1)));
+    const entries = [...counts.entries()];
+    if (!dim.order) entries.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const max = Math.max(1, ...entries.map((e) => e[1]));
+    const chosen = params[key];
+    if (!entries.length) { box.replaceChildren(el('p', 'vd-empty', 'No vendors match these filters.')); return; }
+    box.replaceChildren(...entries.map(([k, n]) => {
+      const b = el('button', 'vd-bar');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(chosen === k));
+      b.setAttribute('aria-label', `${dim.label}: ${k}, ${n} vendors. ${chosen === k ? 'Click to clear.' : 'Click to filter.'}`);
+      const t = el('span', 'vd-bar-t');
+      const f = el('span', 'vd-bar-f');
+      f.style.width = (n / max * 100) + '%';
+      f.style.background = (chosen && chosen !== k) ? 'var(--bar-muted)' : (key === 'lead' ? LEAD_COLOR[k] || dim.color : dim.color);
+      t.append(f);
+      b.append(el('span', 'vd-bar-l', k), t, el('span', 'vd-bar-n', fmt.format(n)));
+      b.addEventListener('click', () => set({ [key]: chosen === k ? null : k }));
+      return b;
+    }));
+  }
+
+  function drawTable(rows) {
+    const tb = $('#vd-tbody');
+    const ord = SORT_ORDER[sort.key];
+    const keyOf = (r) => {
+      const v = r[sort.key];
+      if (ord) { const i = ord.indexOf(v); return i < 0 ? 99 : i; }
+      return (v || '￿').toString().toLowerCase();
+    };
+    const sorted = rows.slice().sort((a, b) => {
+      const x = keyOf(a), y = keyOf(b);
+      return ((x < y ? -1 : x > y ? 1 : 0) * sort.dir) || a.Vendor.localeCompare(b.Vendor);
+    });
+    document.querySelectorAll('.vd-table th').forEach((th) => {
+      th.setAttribute('aria-sort', th.dataset.field === sort.key ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none');
+    });
+    if (!sorted.length) {
+      const tr = el('tr'); const td = el('td', 'vd-empty', 'No vendors match these filters.');
+      td.colSpan = 8; tr.append(td); tb.replaceChildren(tr); return;
+    }
+    const cols = [['Vendor'], ['Country'], ['Categories', 'vd-hide-narrow'], ['Price Range', 'vd-hide-narrow'], ['Lead Rating'],
+      ['G10 Fest Interest', 'vd-hide-narrow'], ['G10 Consignment Interest', 'vd-hide-narrow'], ['Our Contact', 'vd-hide-narrow']];
+    tb.replaceChildren(...sorted.map((r) => {
+      const tr = el('tr');
+      tr.dataset.key = r.Vendor;
+      tr.tabIndex = 0;
+      tr.setAttribute('aria-selected', String(selected === r.Vendor));
+      cols.forEach(([f, cls]) => {
+        const td = el('td', cls);
+        const v = r[f];
+        if (f === 'Lead Rating' && v) { const p = el('span', 'vd-pill', v); p.style.color = LEAD_COLOR[v] || 'var(--muted)'; td.append(p); }
+        else td.textContent = v ?? '';
+        tr.append(td);
+      });
+      return tr;
+    }));
+  }
+
+  function addRow(dl, label, value, opts = {}) {
+    if (!value) return;
+    const dd = el('dd');
+    if (opts.link && /^https:\/\//.test(value)) {
+      const a = el('a', null, opts.text || value.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, ''));
+      a.href = value; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      dd.append(a);
+    } else {
+      dd.textContent = value;
+    }
+    if (opts.copy) {
+      const b = el('button', 'vd-copy', 'Copy'); b.type = 'button';
+      b.addEventListener('click', () => {
+        Promise.resolve().then(() => navigator.clipboard.writeText(value)).then(() => { b.textContent = 'Copied'; }, () => {
+          const s = window.getSelection(); const rg = document.createRange(); rg.selectNodeContents(dd); s.removeAllRanges(); s.addRange(rg);
+        });
+      });
+      dd.append(b);
+    }
+    dl.append(el('dt', null, label), dd);
+  }
+
+  function drawDetail() {
+    const r = ALL.find((x) => x.Vendor === selected);
+    const body = $('#vd-d-body');
+    if (!r) {
+      $('#vd-d-name').textContent = 'Vendor profile';
+      $('#vd-d-sub').textContent = 'Pick a vendor in the directory to see their contacts and our notes.';
+      body.hidden = true; return;
+    }
+    $('#vd-d-name').textContent = r.Vendor;
+    $('#vd-d-sub').textContent = [r['Vendor Type'], r.Country, r['Price Range'] && ('stock ' + r['Price Range']), r['Lead Rating'] && (r['Lead Rating'] + ' lead')].filter(Boolean).join(' · ');
+    const dl = $('#vd-d-contact'); dl.replaceChildren();
+    addRow(dl, 'Person', r['Contact Person']);
+    addRow(dl, 'Instagram', r.Instagram, { link: true });
+    addRow(dl, 'Email', r.Email, { copy: true });
+    addRow(dl, 'Other', r['Contact Details'], { copy: true });
+    addRow(dl, 'Our contact', r['Our Contact']);
+    addRow(dl, 'Met at', r['Met At']);
+    addRow(dl, 'Outreach', r['Outreach Status'] || 'Not set yet');
+    addRow(dl, 'Next step', r['Next Step']);
+    addRow(dl, 'Notion', r.url, { link: true, text: 'Open in Notion (team only)' });
+    $('#vd-d-notes').textContent = r['Notes / Market Insights'] || 'No notes yet.';
+    $('#vd-d-partner').textContent = r['Partnership Opportunity'] || 'None noted.';
+    body.hidden = false;
+  }
+
+  function drawPartners(rows) {
+    const box = $('#vd-partners');
+    const list = rows.filter((r) => r['Partnership Opportunity'] && r['Partnership Opportunity'] !== 'None identified.');
+    if (!list.length) { box.replaceChildren(el('p', 'vd-empty', 'No partnership leads match these filters.')); return; }
+    box.replaceChildren(...list.map((r) => {
+      const b = el('button', 'vd-partner'); b.type = 'button'; b.dataset.vendor = r.Vendor;
+      b.append(el('b', null, r.Vendor), el('span', null, [r['Vendor Type'], r.Country].filter(Boolean).join(' · ')), el('p', null, r['Partnership Opportunity']));
+      return b;
+    }));
+  }
+
+  function drawFilters() {
+    if (q !== document.activeElement) q.value = params.q ?? '';
+    const chips = Object.keys(DIMS).filter((k) => params[k]).map((k) => {
+      const b = el('button', 'vd-chip', `${DIMS[k].label}: ${params[k]} ×`); b.type = 'button';
+      b.setAttribute('aria-label', `Remove filter ${DIMS[k].label}: ${params[k]}`);
+      b.addEventListener('click', () => set({ [k]: null }));
+      return b;
+    });
+    $('#vd-chips').replaceChildren(...chips);
+    $('#vd-reset').hidden = !(chips.length || params.q);
+  }
+
+  function draw() {
+    const rows = ALL.filter((r) => matches(r));
+    const k = {
+      total: rows.length,
+      hot: rows.filter((r) => r['Lead Rating'] === 'Hot').length,
+      fest: rows.filter((r) => ['Yes', 'Past Participant'].includes(r['G10 Fest Interest'])).length,
+      consign: rows.filter((r) => r['G10 Consignment Interest'] === 'Yes').length,
+      markets: new Set(rows.map((r) => r.Country).filter(Boolean)).size,
+    };
+    document.querySelectorAll('.vd-kpi-v').forEach((n) => { n.textContent = fmt.format(k[n.dataset.k]); });
+    $('#vd-take').textContent = rows.length !== ALL.length
+      ? `Showing ${rows.length} of ${ALL.length} vendors. ${k.hot} are hot leads and ${k.fest} want to join a Grade10 show.`
+      : `${ALL.length} vendors from ${k.markets} markets. ${k.hot} are hot leads, ${k.fest} want to join a Grade10 show and ${k.consign} are open to G10 consignment.`;
+    document.querySelectorAll('.vd-bars').forEach(drawBars);
+    drawFilters();
+    drawTable(rows);
+    $('#vd-count').textContent = `${rows.length} ${rows.length === 1 ? 'vendor' : 'vendors'}. Click a vendor to see contacts and notes. Click a column name to sort.`;
+    drawDetail();
+    drawPartners(rows);
+  }
+
+  const upd = new Date(DATA.updated);
+  $('#vd-updated').textContent = 'Data from Notion, updated ' + upd.toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  draw();
+})();
+</script>
+</body>
+</html>
