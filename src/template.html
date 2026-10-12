@@ -140,14 +140,14 @@ body{margin:0;color:var(--fg);font-family:var(--sans);font-size:15px;line-height
   </section>
 
   <div class="vd-filters" id="filters">
-    <input id="vd-q" type="search" placeholder="Search vendor, contact, country or notes" aria-label="Search vendors">
+    <input id="vd-q" type="search" placeholder="Search vendor, contact, jurisdiction or notes" aria-label="Search vendors">
     <div class="vd-chips" id="vd-chips"></div>
     <button class="vd-reset" id="vd-reset" type="button" hidden>Clear filters</button>
   </div>
 
   <section class="vd-grid" id="breakdowns">
     <div class="vd-card" id="by-lead"><h2>Lead rating</h2><p class="vd-note">Click a bar to filter the page.</p><div class="vd-bars" data-dim="lead"></div></div>
-    <div class="vd-card" id="by-country"><h2>Country</h2><p class="vd-note">Where each vendor is based. Click a country to filter.</p><div class="vd-bars" data-dim="country"></div></div>
+    <div class="vd-card" id="by-country"><h2>Jurisdiction</h2><p class="vd-note">Where each vendor is based. Click a jurisdiction to filter.</p><div class="vd-bars" data-dim="country"></div></div>
     <div class="vd-card" id="by-category"><h2>What they sell</h2><p class="vd-note">A vendor can sell more than one category.</p><div class="vd-bars" data-dim="cat"></div></div>
     <div class="vd-card" id="by-show"><h2>Where we met them</h2><p class="vd-note">Card shows our team attended.</p><div class="vd-bars" data-dim="show"></div></div>
     <div class="vd-card" id="by-fest"><h2>Interest in a G10 show</h2><p class="vd-note">Their answer when we asked about G10 Fest.</p><div class="vd-bars" data-dim="fest"></div></div>
@@ -191,7 +191,7 @@ body{margin:0;color:var(--fg);font-family:var(--sans);font-size:15px;line-height
         <thead><tr>
           <th data-field="Vendor"><button type="button" data-sort="Vendor">Vendor</button></th>
           <th data-field="Vendor Type" class="vd-hide-narrow"><button type="button" data-sort="Vendor Type">Type</button></th>
-          <th data-field="Country"><button type="button" data-sort="Country">Country</button></th>
+          <th data-field="Country"><button type="button" data-sort="Country">Jurisdiction</button></th>
           <th data-field="Contact Person" class="vd-hide-narrow"><button type="button" data-sort="Contact Person">Contact person</button></th>
           <th data-field="_ig"><button type="button" data-sort="_ig">Instagram</button></th>
           <th data-field="_chat" class="vd-hide-narrow"><button type="button" data-sort="_chat">WeChat / WhatsApp</button></th>
@@ -253,7 +253,7 @@ body{margin:0;color:var(--fg);font-family:var(--sans);font-size:15px;line-height
 
   const DIMS = {
     lead: { field: 'Lead Rating', label: 'Lead', order: ['Hot', 'Warm', 'Neutral', 'Cool'], color: 'var(--c1)' },
-    country: { field: 'Country', label: 'Country', split: /\s*\/\s*/, color: 'var(--c1)' },
+    country: { field: 'Country', label: 'Jurisdiction', split: /\s*\/\s*/, color: 'var(--c1)' },
     cat: { field: 'Categories', label: 'Sells', multi: true, color: 'var(--c3)' },
     show: { field: 'Met At', label: 'Met at', multi: true, color: 'var(--c4)' },
     fest: { field: 'G10 Fest Interest', label: 'G10 show', order: ['Yes', 'Past Participant', 'Maybe', 'No'], color: 'var(--c5)' },
