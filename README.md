@@ -1,4 +1,4 @@
-# Grade10 Vendor Dashboard
+# G10 Partner and Exhibitor Pipelines
 
 A password-protected dashboard of the trading card vendors Grade10 has met at card shows. The data comes from the **Vendors** database in Notion (Grade10 / Card Shows / Trading Card Vendor Database).
 

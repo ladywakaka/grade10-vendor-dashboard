@@ -49,8 +49,8 @@ jobs:
             --short \
             --salt 8dcc7aed1f18f9ccf390fdbe1e59b108 \
             --remember 30 \
-            --template-title "Grade10 Vendor Dashboard" \
-            --template-instructions "Enter the team password to view the vendor dashboard." \
+            --template-title "G10 Partner and Exhibitor Pipelines" \
+            --template-instructions "Enter the team password to view the G10 partner and exhibitor pipelines." \
             --template-button "Open dashboard" \
             --template-color-primary "#3a68d0" \
             --template-color-secondary "#f6f6f4"
