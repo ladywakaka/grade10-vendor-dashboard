@@ -34,19 +34,6 @@ jobs:
       - name: Build page
         run: python scripts/build.py
 
-      # The launch tracker is a second page at /launch/. If its Notion pages are not shared with
-      # the integration yet, this step fails on its own and the vendor dashboard still publishes.
-      - name: Pull launch tracker from Notion
-        id: launch
-        continue-on-error: true
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: python scripts/fetch_launch.py
-
-      - name: Build launch tracker page
-        if: steps.launch.outcome == 'success'
-        run: python scripts/build_launch.py
-
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -67,19 +54,6 @@ jobs:
             --template-button "Open dashboard" \
             --template-color-primary "#3a68d0" \
             --template-color-secondary "#f6f6f4"
-          if [ -f build/launch/index.html ]; then
-            npx --yes staticrypt@3 build/launch/index.html \
-              -p "$DASHBOARD_PASSWORD" \
-              -d dist/launch \
-              --short \
-              --salt 8dcc7aed1f18f9ccf390fdbe1e59b108 \
-              --remember 30 \
-              --template-title "G10 Shop Launch Tracker" \
-              --template-instructions "Enter the team password to view the G10 shop launch tracker." \
-              --template-button "Open tracker" \
-              --template-color-primary "#a87a2e" \
-              --template-color-secondary "#f6f4f0"
-          fi
           printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt
           rm -rf build data
 
